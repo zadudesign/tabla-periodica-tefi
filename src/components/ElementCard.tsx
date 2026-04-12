@@ -38,7 +38,7 @@ export function ElementCard({ method, onClick }: ElementCardProps) {
     const activeSegments = levels[method.complexityLevel] || 1;
     
     return (
-      <div className="flex gap-[2px] w-full h-2.5 sm:h-3" title={`Complejidad: ${method.complexityLevel}`}>
+      <div className="flex gap-[2px] w-full h-1.5 sm:h-2" title={`Complejidad: ${method.complexityLevel}`}>
         {/* Segmento 1 (Izquierda, borde redondeado) */}
         <div className={`flex-1 rounded-l-full border border-current ${activeSegments >= 1 ? 'bg-current' : 'bg-transparent'}`} />
         {/* Segmento 2 (Centro, cuadrado) */}
