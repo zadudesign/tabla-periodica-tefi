@@ -239,10 +239,6 @@ export default function App() {
       <main className="max-w-[1600px] mx-auto px-4 py-8 flex flex-col items-center">
         
         <header className="text-center mb-12 space-y-4 relative w-full">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-4">
-            <Database className="w-3 h-3" />
-            Conectado a Supabase
-          </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 text-transparent bg-clip-text">
             Tabla Periódica de Evaluación
           </h1>
