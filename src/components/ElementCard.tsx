@@ -4,6 +4,7 @@ import { EvaluationType, EvaluationMethod, FormativeAction } from '../types/eval
 interface ElementCardProps {
   method: EvaluationMethod;
   onClick?: (method: EvaluationMethod) => void;
+  isFaded?: boolean;
 }
 
 // Diccionario de colores semánticos por ACCIÓN FORMATIVA (Modo Oscuro)
@@ -25,7 +26,7 @@ const typeAbbreviations: Record<EvaluationType, string> = {
   Coevaluación: 'CE',
 };
 
-export function ElementCard({ method, onClick }: ElementCardProps) {
+export function ElementCard({ method, onClick, isFaded }: ElementCardProps) {
   // El color ahora depende de la Acción Formativa
   const colorClasses = actionColors[method.formativeAction] || 'bg-slate-800 border-slate-700 text-slate-300';
   
@@ -57,6 +58,7 @@ export function ElementCard({ method, onClick }: ElementCardProps) {
         border-2 rounded-xl transition-all duration-300 ease-out
         aspect-[5/6] w-full cursor-pointer group
         ${colorClasses}
+        ${isFaded ? 'opacity-20 grayscale hover:opacity-40' : ''}
       `}
       style={{
         gridColumn: method.gridX,
@@ -64,18 +66,11 @@ export function ElementCard({ method, onClick }: ElementCardProps) {
       }}
       title={`${method.name} - ${method.evaluationType}`}
     >
-      {/* Fila 1: Icono, ID y Tipo */}
-      <div className="grid grid-cols-4 items-center w-full px-0.5 pt-0.5">
-        {/* Izquierda (2 columnas): Icono */}
-        <div className="col-span-2 flex justify-start">
-          <IconComponent 
-            className="w-6 h-6 sm:w-7 sm:h-7 opacity-80 group-hover:opacity-100 transition-all duration-300" 
-            strokeWidth={2} 
-          />
-        </div>
+      {/* Fila 1: Número, Tipo e Icono */}
+      <div className="grid grid-cols-3 items-center w-full px-0.5 pt-0.5">
         
-        {/* Columna 3: ID en círculo */}
-        <div className="flex justify-center">
+        {/* Columna 1 (Izquierda): ID en círculo */}
+        <div className="flex justify-start">
           <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-current flex items-center justify-center">
             <span className="text-[0.6rem] sm:text-[0.7rem] font-bold text-slate-950 leading-none">
               {method.atomicNumber}
@@ -83,11 +78,19 @@ export function ElementCard({ method, onClick }: ElementCardProps) {
           </div>
         </div>
 
-        {/* Columna 4: Abreviatura del Tipo */}
-        <div className="flex justify-end">
+        {/* Columna 2 (Centro): Abreviatura del Tipo */}
+        <div className="flex justify-center">
           <span className="text-[0.65rem] sm:text-xs font-bold">
             {typeAbbreviations[method.evaluationType]}
           </span>
+        </div>
+
+        {/* Columna 3 (Derecha): Icono */}
+        <div className="flex justify-end">
+          <IconComponent 
+            className="w-5 h-5 sm:w-6 sm:h-6 opacity-80 group-hover:opacity-100 transition-all duration-300" 
+            strokeWidth={2} 
+          />
         </div>
       </div>
       
