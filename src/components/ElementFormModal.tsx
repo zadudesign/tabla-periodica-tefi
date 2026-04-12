@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { EvaluationMethod, EvaluationType, ComplexityLevel, FormativeAction, Modality } from '../types/evaluation';
 
@@ -6,52 +6,55 @@ interface ElementFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (element: EvaluationMethod) => void;
+  initialData?: EvaluationMethod | null;
 }
 
-export function ElementFormModal({ isOpen, onClose, onSave }: ElementFormModalProps) {
-  const [formData, setFormData] = useState<Partial<EvaluationMethod>>({
-    name: '',
-    symbol: '',
-    atomicNumber: 1,
-    evaluationType: 'Heteroevaluación',
-    complexityLevel: 'Intermedio',
-    formativeAction: 'Analizar',
-    modality: 'Escritura',
-    gridX: 1,
-    gridY: 1,
-    icon: 'FileText',
-    description: '',
-  });
+const defaultFormData: Partial<EvaluationMethod> = {
+  name: '',
+  symbol: '',
+  atomicNumber: 1,
+  evaluationType: 'Heteroevaluación',
+  complexityLevel: 'Intermedio',
+  formativeAction: 'Analizar',
+  modality: 'Escritura',
+  gridX: 1,
+  gridY: 1,
+  icon: 'FileText',
+  description: '',
+};
+
+export function ElementFormModal({ isOpen, onClose, onSave, initialData }: ElementFormModalProps) {
+  const [formData, setFormData] = useState<Partial<EvaluationMethod>>(defaultFormData);
+
+  // Cargar datos iniciales si estamos en modo edición
+  useEffect(() => {
+    if (isOpen) {
+      if (initialData) {
+        setFormData(initialData);
+      } else {
+        setFormData(defaultFormData);
+      }
+    }
+  }, [isOpen, initialData]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Generar un ID único combinando el nombre y un sufijo aleatorio
-    const baseName = formData.name?.toLowerCase().replace(/\s+/g, '-') || 'elemento';
-    const uniqueSuffix = Math.random().toString(36).substring(2, 9);
-    const id = `${baseName}-${uniqueSuffix}`;
+    // Si estamos editando, conservamos el ID original. Si es nuevo, generamos uno.
+    let id = initialData?.id;
+    if (!id) {
+      const baseName = formData.name?.toLowerCase().replace(/\s+/g, '-') || 'elemento';
+      const uniqueSuffix = Math.random().toString(36).substring(2, 9);
+      id = `${baseName}-${uniqueSuffix}`;
+    }
     
     onSave({
       ...formData,
       id,
     } as EvaluationMethod);
     
-    // Resetear formulario
-    setFormData({
-      name: '',
-      symbol: '',
-      atomicNumber: 1,
-      evaluationType: 'Heteroevaluación',
-      complexityLevel: 'Intermedio',
-      formativeAction: 'Analizar',
-      modality: 'Escritura',
-      gridX: 1,
-      gridY: 1,
-      icon: 'FileText',
-      description: '',
-    });
     onClose();
   };
 
@@ -69,7 +72,9 @@ export function ElementFormModal({ isOpen, onClose, onSave }: ElementFormModalPr
         
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-slate-800">
-          <h2 className="text-2xl font-bold text-slate-100">Agregar Nuevo Elemento</h2>
+          <h2 className="text-2xl font-bold text-slate-100">
+            {initialData ? 'Editar Elemento' : 'Agregar Nuevo Elemento'}
+          </h2>
           <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
             <X className="w-6 h-6" />
           </button>
