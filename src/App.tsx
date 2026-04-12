@@ -84,7 +84,17 @@ export default function App() {
 
   const handleSaveElement = async (newElement: EvaluationMethod) => {
     try {
-      // Guardar en Supabase
+      // Buscar si ya existe un elemento diferente en esa misma coordenada
+      const existingElement = elements.find(
+        e => e.gridX === newElement.gridX && e.gridY === newElement.gridY && e.id !== newElement.id
+      );
+
+      // Si existe, lo borramos de Supabase para evitar empalmes
+      if (existingElement) {
+        await elementService.deleteElement(existingElement.id);
+      }
+
+      // Guardar el nuevo elemento en Supabase
       const savedElement = await elementService.saveElement(newElement);
       
       // Actualizar estado local
@@ -95,6 +105,7 @@ export default function App() {
       });
       
       setElementToEdit(null); // Limpiamos el estado de edición
+      setIsFormOpen(false);   // Cerramos el modal
     } catch (err: any) {
       console.error('Error guardando elemento:', err);
       alert('Hubo un error al guardar el elemento en la base de datos.');

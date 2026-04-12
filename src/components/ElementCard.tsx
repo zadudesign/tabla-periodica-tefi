@@ -64,13 +64,14 @@ export function ElementCard({ method, onClick }: ElementCardProps) {
       }}
       title={`${method.name} - ${method.evaluationType}`}
     >
-      {/* Fila 1: Símbolo, ID y Tipo */}
+      {/* Fila 1: Icono, ID y Tipo */}
       <div className="grid grid-cols-4 items-center w-full px-0.5 pt-0.5">
-        {/* Izquierda (2 columnas): Símbolo grande */}
+        {/* Izquierda (2 columnas): Icono */}
         <div className="col-span-2 flex justify-start">
-          <span className="text-xl sm:text-2xl font-black tracking-tighter leading-none">
-            {method.symbol}
-          </span>
+          <IconComponent 
+            className="w-6 h-6 sm:w-7 sm:h-7 opacity-80 group-hover:opacity-100 transition-all duration-300" 
+            strokeWidth={2} 
+          />
         </div>
         
         {/* Columna 3: ID en círculo */}
@@ -90,17 +91,16 @@ export function ElementCard({ method, onClick }: ElementCardProps) {
         </div>
       </div>
       
-      {/* Fila 2: Barra de complejidad */}
-      <div className="w-full px-0.5 mt-2 sm:mt-2.5">
-        {renderComplexityBar()}
+      {/* Fila 2: Símbolo grande (Centro) */}
+      <div className="flex-1 w-full flex items-center justify-center mt-1">
+        <span className="text-3xl sm:text-4xl font-black tracking-tighter leading-none opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300">
+          {method.symbol}
+        </span>
       </div>
-      
-      {/* Fila 3: Icono (sin recuadro) */}
-      <div className="flex-1 w-full flex items-center justify-center mt-1 pb-1">
-        <IconComponent 
-          className="w-10 h-10 sm:w-12 sm:h-12 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300" 
-          strokeWidth={1.5} 
-        />
+
+      {/* Fila 3: Barra de complejidad (Abajo) */}
+      <div className="w-full px-0.5 mt-1 sm:mt-1.5 pb-0.5">
+        {renderComplexityBar()}
       </div>
     </button>
   );
