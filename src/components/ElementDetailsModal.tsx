@@ -7,6 +7,7 @@ interface ElementDetailsModalProps {
   onClose: () => void;
   onEdit: (method: EvaluationMethod) => void;
   onDelete: (method: EvaluationMethod) => void;
+  isAuthenticated: boolean;
 }
 
 // Diccionario de colores para el fondo y bordes del modal según la Acción Formativa
@@ -21,7 +22,7 @@ const actionThemes: Record<FormativeAction, { bg: string, border: string, text: 
   Sintetizar: { bg: 'from-cyan-950 to-slate-950', border: 'border-cyan-500/50', text: 'text-cyan-400', badge: 'bg-cyan-500/20 text-cyan-300' },
 };
 
-export function ElementDetailsModal({ method, onClose, onEdit, onDelete }: ElementDetailsModalProps) {
+export function ElementDetailsModal({ method, onClose, onEdit, onDelete, isAuthenticated }: ElementDetailsModalProps) {
   if (!method) return null;
 
   const IconComponent = (LucideIcons as any)[method.icon] || LucideIcons.HelpCircle;
@@ -122,23 +123,25 @@ export function ElementDetailsModal({ method, onClose, onEdit, onDelete }: Eleme
 
           </div>
 
-          {/* Botones de Acción (Editar / Eliminar) */}
-          <div className="flex gap-3 mt-2 pt-4 border-t border-slate-800/50">
-            <button 
-              onClick={() => onEdit(method)}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors border border-slate-700"
-            >
-              <Edit2 className="w-4 h-4" />
-              Editar
-            </button>
-            <button 
-              onClick={() => onDelete(method)}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-950/30 hover:bg-red-900/50 text-red-400 rounded-lg font-medium transition-colors border border-red-900/50"
-            >
-              <Trash2 className="w-4 h-4" />
-              Eliminar
-            </button>
-          </div>
+          {/* Botones de Acción (Editar / Eliminar) - Solo visibles si está autenticado */}
+          {isAuthenticated && (
+            <div className="flex gap-3 mt-2 pt-4 border-t border-slate-800/50">
+              <button 
+                onClick={() => onEdit(method)}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors border border-slate-700"
+              >
+                <Edit2 className="w-4 h-4" />
+                Editar
+              </button>
+              <button 
+                onClick={() => onDelete(method)}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-950/30 hover:bg-red-900/50 text-red-400 rounded-lg font-medium transition-colors border border-red-900/50"
+              >
+                <Trash2 className="w-4 h-4" />
+                Eliminar
+              </button>
+            </div>
+          )}
 
         </div>
       </div>

@@ -1,25 +1,41 @@
 import { useState, useEffect } from 'react';
-import { Plus, Database, Loader2 } from 'lucide-react';
+import { Plus, Database, Loader2, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 import { PeriodicTable } from './components/PeriodicTable';
 import { ElementFormModal } from './components/ElementFormModal';
 import { ElementDetailsModal } from './components/ElementDetailsModal';
+import { LoginModal } from './components/LoginModal';
 import { EvaluationMethod } from './types/evaluation';
 import { EVALUATION_METHODS as INITIAL_METHODS } from './constants/methods';
-import { isSupabaseConfigured } from './lib/supabase';
+import { isSupabaseConfigured, supabase } from './lib/supabase';
 import { elementService } from './services/elementService';
+import { User } from '@supabase/supabase-js';
 
 export default function App() {
   const [elements, setElements] = useState<EvaluationMethod[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [selectedElement, setSelectedElement] = useState<EvaluationMethod | null>(null);
   const [elementToEdit, setElementToEdit] = useState<EvaluationMethod | null>(null);
   const [isLoading, setIsLoading] = useState(isSupabaseConfigured);
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-  // Cargar datos desde Supabase al iniciar
+  // Cargar datos desde Supabase al iniciar y escuchar cambios de autenticación
   useEffect(() => {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && supabase) {
       loadElements();
+      
+      // Obtener sesión actual
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null);
+      });
+
+      // Escuchar cambios en la sesión (login/logout)
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+      });
+
+      return () => subscription.unsubscribe();
     }
   }, []);
 
@@ -97,6 +113,12 @@ export default function App() {
       } finally {
         setIsLoading(false);
       }
+    }
+  };
+
+  const handleLogout = async () => {
+    if (supabase) {
+      await supabase.auth.signOut();
     }
   };
 
@@ -184,10 +206,40 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-emerald-500/30">
-      <main className="max-w-[1600px] mx-auto px-4 py-12 flex flex-col items-center">
+      
+      {/* Barra superior de navegación/autenticación */}
+      <div className="w-full border-b border-slate-800/50 bg-slate-900/30">
+        <div className="max-w-[1600px] mx-auto px-4 h-14 flex items-center justify-end">
+          {user ? (
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Modo Edición Activo</span>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Cerrar Sesión
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={() => setIsLoginOpen(true)}
+              className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              <LogIn className="w-4 h-4" />
+              Acceso Administrador
+            </button>
+          )}
+        </div>
+      </div>
+
+      <main className="max-w-[1600px] mx-auto px-4 py-8 flex flex-col items-center">
         
         <header className="text-center mb-12 space-y-4 relative w-full">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-4">
             <Database className="w-3 h-3" />
             Conectado a Supabase
           </div>
@@ -198,25 +250,27 @@ export default function App() {
             Una clasificación interactiva de métodos, instrumentos y estrategias de evaluación docente.
           </p>
           
-          {/* Botones de Acción */}
-          <div className="flex justify-center gap-4 mt-6">
-            <button 
-              onClick={() => {
-                setElementToEdit(null);
-                setIsFormOpen(true);
-              }}
-              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-lg shadow-emerald-900/20"
-            >
-              <Plus className="w-5 h-5" />
-              Agregar Elemento
-            </button>
-            <button 
-              onClick={handleReset}
-              className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2.5 rounded-full font-medium transition-all"
-            >
-              Restaurar Original
-            </button>
-          </div>
+          {/* Botones de Acción (Solo visibles si es administrador) */}
+          {user && (
+            <div className="flex justify-center gap-4 mt-6">
+              <button 
+                onClick={() => {
+                  setElementToEdit(null);
+                  setIsFormOpen(true);
+                }}
+                className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-lg shadow-emerald-900/20"
+              >
+                <Plus className="w-5 h-5" />
+                Agregar Elemento
+              </button>
+              <button 
+                onClick={handleReset}
+                className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2.5 rounded-full font-medium transition-all"
+              >
+                Restaurar Original
+              </button>
+            </div>
+          )}
         </header>
 
         {/* Leyenda de Acciones Formativas (Colores) */}
@@ -252,6 +306,13 @@ export default function App() {
         onClose={() => setSelectedElement(null)} 
         onEdit={handleEditElement}
         onDelete={handleDeleteElement}
+        isAuthenticated={!!user}
+      />
+
+      {/* Modal de Login */}
+      <LoginModal 
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
       />
     </div>
   );
