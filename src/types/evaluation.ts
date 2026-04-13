@@ -29,6 +29,7 @@ export interface EvaluationMethod {
   modality: Modality;
   icon: string;
   description: string;
+  youtubeUrl?: string;
   /**
    * Posición en el eje X de la cuadrícula (Columnas 1 al 14)
    * Inspirado en los grupos de la tabla periódica química.

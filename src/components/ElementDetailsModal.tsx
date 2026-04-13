@@ -28,13 +28,23 @@ export function ElementDetailsModal({ method, onClose, onEdit, onDelete, isAuthe
   const IconComponent = (LucideIcons as any)[method.icon] || LucideIcons.HelpCircle;
   const theme = actionThemes[method.formativeAction] || { bg: 'from-slate-900 to-slate-950', border: 'border-slate-700', text: 'text-slate-300', badge: 'bg-slate-800 text-slate-300' };
 
+  // Helper para extraer el ID de YouTube
+  const getYouTubeId = (url?: string) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const youtubeId = getYouTubeId(method.youtubeUrl);
+
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto"
       onClick={onClose} // Cerrar al hacer clic fuera
     >
       <div 
-        className={`relative w-full max-w-lg bg-gradient-to-b ${theme.bg} border-2 ${theme.border} rounded-2xl shadow-2xl overflow-hidden flex flex-col`}
+        className={`relative w-full max-w-lg bg-gradient-to-b ${theme.bg} border-2 ${theme.border} rounded-2xl shadow-2xl overflow-hidden flex flex-col my-8`}
         onClick={e => e.stopPropagation()} // Evitar que el clic dentro cierre el modal
       >
         {/* Botón de cerrar */}
@@ -81,6 +91,23 @@ export function ElementDetailsModal({ method, onClose, onEdit, onDelete, isAuthe
               {method.description}
             </p>
           </div>
+
+          {/* Video de YouTube (si existe) */}
+          {youtubeId && (
+            <div className="w-full">
+              <h4 className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Video Explicativo</h4>
+              <div className="relative w-full pt-[56.25%] rounded-xl overflow-hidden border border-slate-700/50 bg-slate-950 shadow-inner">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  src={`https://www.youtube.com/embed/${youtubeId}`}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            </div>
+          )}
 
           {/* Cuadrícula de Atributos */}
           <div className="grid grid-cols-2 gap-4">

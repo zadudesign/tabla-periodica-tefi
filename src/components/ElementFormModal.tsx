@@ -21,6 +21,7 @@ const defaultFormData: Partial<EvaluationMethod> = {
   gridY: 1,
   icon: 'FileText',
   description: '',
+  youtubeUrl: '',
 };
 
 export function ElementFormModal({ isOpen, onClose, onSave, initialData }: ElementFormModalProps) {
@@ -248,6 +249,19 @@ export function ElementFormModal({ isOpen, onClose, onSave, initialData }: Eleme
                 onChange={handleChange}
                 className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none resize-none"
                 placeholder="Describe brevemente este método de evaluación..."
+              />
+            </div>
+
+            {/* 12. URL de YouTube */}
+            <div className="space-y-2 md:col-span-2">
+              <label className="text-sm font-medium text-slate-300">URL de YouTube (Opcional)</label>
+              <input 
+                type="url"
+                name="youtubeUrl"
+                value={formData.youtubeUrl || ''}
+                onChange={handleChange}
+                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
+                placeholder="Ej: https://www.youtube.com/watch?v=..."
               />
             </div>
           </div>

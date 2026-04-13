@@ -181,6 +181,7 @@ export default function App() {
   modality text not null,
   icon text not null,
   description text not null,
+  "youtubeUrl" text,
   "gridX" integer not null,
   "gridY" integer not null
 );`}
