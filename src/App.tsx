@@ -290,8 +290,14 @@ export default function App() {
           )}
         </header>
 
+        <PeriodicTable 
+          elements={elements} 
+          onElementClick={handleElementClick} 
+          filters={filters}
+        />
+
         {/* Filtros */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-10 w-full max-w-5xl mx-auto bg-slate-900/50 p-4 rounded-2xl border border-slate-800/50">
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-4 mb-8 w-full max-w-5xl mx-auto bg-slate-900/50 p-4 rounded-2xl border border-slate-800/50">
           <div className="flex items-center gap-2 text-slate-400 mr-2">
             <Filter className="w-5 h-5" />
             <span className="font-medium">Filtros:</span>
@@ -347,14 +353,8 @@ export default function App() {
           </select>
         </div>
 
-        <PeriodicTable 
-          elements={elements} 
-          onElementClick={handleElementClick} 
-          filters={filters}
-        />
-
         {/* Leyenda de Acciones Formativas (Colores) - Movida debajo de la tabla */}
-        <div className="mt-12 w-full max-w-5xl mx-auto">
+        <div className="mt-4 w-full max-w-5xl mx-auto">
           <h3 className="text-center text-slate-400 text-sm font-medium mb-4 uppercase tracking-widest">Acciones Formativas</h3>
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-4 text-sm bg-slate-900/30 p-6 rounded-2xl border border-slate-800/50">
             <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div> Analizar</div>
