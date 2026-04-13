@@ -342,9 +342,8 @@ export default function App() {
           >
             <option value="Todos">Modalidad (Todas)</option>
             <option value="Escritura">Escritura</option>
-            <option value="Oral">Oral</option>
+            <option value="Oralidad">Oralidad</option>
             <option value="Práctica">Práctica</option>
-            <option value="Digital">Digital</option>
           </select>
         </div>
 
