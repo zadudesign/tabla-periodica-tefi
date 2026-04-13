@@ -5,6 +5,7 @@ interface PeriodicTableProps {
   elements: EvaluationMethod[];
   onElementClick?: (method: EvaluationMethod) => void;
   filters?: {
+    action: string;
     type: string;
     complexity: string;
     modality: string;
@@ -29,6 +30,7 @@ export function PeriodicTable({ elements, onElementClick, filters }: PeriodicTab
         >
           {elements.map((method, index) => {
             const isFaded = filters ? (
+              (filters.action !== 'Todas' && method.formativeAction !== filters.action) ||
               (filters.type !== 'Todos' && method.evaluationType !== filters.type) ||
               (filters.complexity !== 'Todos' && method.complexityLevel !== filters.complexity) ||
               (filters.modality !== 'Todos' && method.modality !== filters.modality)

@@ -21,11 +21,13 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
 
   // Estados para los filtros
+  const [filterAction, setFilterAction] = useState<string>('Todas');
   const [filterType, setFilterType] = useState<string>('Todos');
   const [filterComplexity, setFilterComplexity] = useState<string>('Todos');
   const [filterModality, setFilterModality] = useState<string>('Todos');
 
   const filters = {
+    action: filterAction,
     type: filterType,
     complexity: filterComplexity,
     modality: filterModality,
@@ -292,12 +294,28 @@ export default function App() {
         </header>
 
         {/* Filtros */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-10 w-full max-w-4xl mx-auto bg-slate-900/50 p-4 rounded-2xl border border-slate-800/50">
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-10 w-full max-w-5xl mx-auto bg-slate-900/50 p-4 rounded-2xl border border-slate-800/50">
           <div className="flex items-center gap-2 text-slate-400 mr-2">
             <Filter className="w-5 h-5" />
             <span className="font-medium">Filtros:</span>
           </div>
           
+          <select 
+            value={filterAction} 
+            onChange={e => setFilterAction(e.target.value)} 
+            className="bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm font-medium"
+          >
+            <option value="Todas">Acción Formativa (Todas)</option>
+            <option value="Analizar">Analizar</option>
+            <option value="Aplicar">Aplicar</option>
+            <option value="Conocer">Conocer</option>
+            <option value="Dialogar">Dialogar</option>
+            <option value="Evaluar">Evaluar</option>
+            <option value="Expresar">Expresar</option>
+            <option value="Generar">Generar</option>
+            <option value="Sintetizar">Sintetizar</option>
+          </select>
+
           <select 
             value={filterType} 
             onChange={e => setFilterType(e.target.value)} 
