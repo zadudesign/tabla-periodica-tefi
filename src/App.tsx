@@ -266,9 +266,6 @@ export default function App() {
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 text-transparent bg-clip-text">
             Tabla Periódica de Evaluación Formativa
           </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-            Una clasificación interactiva de métodos, instrumentos y estrategias de evaluación docente.
-          </p>
           
           {/* Botones de Acción (Solo visibles si es administrador) */}
           {user && (
